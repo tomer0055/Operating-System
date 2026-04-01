@@ -105,8 +105,26 @@ Changes:
 Changes:
 - ...
 
+## Conclusion
+**trapframe** = use as a screenshot for the register: p->trapframe, every process have is own. happens when *ecall*
+when change the value of proc the only way is go to is trapframe and change it there.
+
+**acquire/lock** = when access the proc struct make sure to lock and relaese it after use so nobody can change the data.
+
+**AddSysCAll** = sys.proc : impl , syscall.c/syscall.h: add to array\list ,user.h : add so the user will have access.
+
+**AddUserFun** = usys.pl: add to list , /user/X : add X.c and X.d and to the makefile ,
+
+
 ## Build and Run
+
+
 Inside the xv6 project directory:
 
 ```bash
 make qemu
+
+
+
+
+ 
