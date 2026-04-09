@@ -5,7 +5,9 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+
 extern struct proc proc[NPROC];
+
 
 uint64
 sys_exit(void)
@@ -107,6 +109,23 @@ sys_memsize(void)
 
 //** HM1 */
 //**return with lock still held.*/
+
+#define CO_CHAN_SCHED(p)  ((void *)(p))
+#define CO_CHAN_DIRECT(p) ((void *)(((uint64)(p)) | 1ULL))
+
+static int
+is_co_waiting(struct proc *p)
+{
+  return p->state == SLEEPING &&
+         (p->chan == CO_CHAN_SCHED(p) || p->chan == CO_CHAN_DIRECT(p));
+}
+
+static int
+is_co_waiting_sched(struct proc *p)
+{
+  return p->state == SLEEPING && p->chan == CO_CHAN_SCHED(p);
+}
+
 static struct proc *
 find_proc_by_pid(int pid)
 {
@@ -127,51 +146,77 @@ find_proc_by_pid(int pid)
   }
   return 0;
 }
-static int
-is_co_waiting(struct proc *p)
-{
-  return p->state == SLEEPING && p->chan == (void *)p;
-}
-static void 
+static void
 co_sleep(struct proc *p)
 {
   acquire(&p->lock);
-  p->chan = (void *)p;
+  p->chan = CO_CHAN_SCHED(p);
   p->state = SLEEPING;
   sched();
   p->chan = 0;
-  release(&p->lock);
+  if (holding(&p->lock))
+    release(&p->lock);
 }
-
 
 uint64
 sys_co_yield(void)
 {
   int value, pid;
+  struct proc *curr, *target;
+  int target_from_sched;
+
   argint(0, &pid);
   argint(1, &value);
-  struct proc *curr = myproc();
-  if (pid <= 0 || pid == curr->pid)
-  {
-    return -1;
-  }
-  struct proc *target = find_proc_by_pid(pid);
-  if (target == 0)
-  {
-    return -1;
-  }
-  if (is_co_waiting(target))
-  {
-    target->trapframe->a0 = value;
-    target->state = RUNNABLE;
-    release(&target->lock);
-  }
-  else
-  {
-    release(&target->lock);
-  }
 
+  curr = myproc();
+
+  if (pid <= 0 || pid == curr->pid)
+    return -1;
+
+  target = find_proc_by_pid(pid);   // returns with target->lock held
+  if (target == 0)
+    return -1;
+
+ if (!is_co_waiting(target)) {
+  release(&target->lock);
   co_sleep(curr);
+
+  if (killed(curr))
+    return -1;
+
   return curr->trapframe->a0;
+}
+
+  target_from_sched = is_co_waiting_sched(target);
+
+  acquire(&curr->lock);
+
+  target->trapframe->a0 = value;
+
+  curr->chan = CO_CHAN_DIRECT(curr);
+  curr->state = SLEEPING;
+
+  target->state = RUNNING;
+  mycpu()->proc = target;
+
+  release(&curr->lock);
+
+  // If target is resuming from co_sleep()->sched(), keep target->lock held.
+  // If target is resuming from a previous direct swtch, release it now.
+  if (!target_from_sched && holding(&target->lock))
+  release(&target->lock);
+
+swtch(&curr->context, &target->context);
+
+mycpu()->proc = curr;
+curr->chan = 0;
+
+if (holding(&curr->lock))
+  release(&curr->lock);
+
+if (killed(curr))
+  return -1;
+
+return curr->trapframe->a0;
 }
 //*HM1 */
