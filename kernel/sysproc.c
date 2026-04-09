@@ -173,7 +173,5 @@ sys_co_yield(void)
 
   co_sleep(curr);
   return curr->trapframe->a0;
-
-  return 0;
 }
 //*HM1 */
