@@ -462,9 +462,13 @@ scheduler(void)
         c->proc = p;
         swtch(&c->context, &p->context);
 
+        // save pointer to the process that really runs on the cpu
+        struct proc *yielded_proc = c->proc;
         // Process is done running for now.
         // It should have changed its p->state before coming back.
-        c->proc = 0;
+        c->proc = 0; // tell the kernel that it's not running any process now
+        release(&yielded_proc->lock); // release the lock of the process that just yielded
+        continue; // go to the next iteration of the scheduler loop to not release twice the same lock
       }
       release(&p->lock);
     }
