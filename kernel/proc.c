@@ -461,7 +461,7 @@ scheduler(void)
         p->state = RUNNING;
         c->proc = p;
         swtch(&c->context, &p->context);
-
+        
         // save pointer to the process that really runs on the cpu
         struct proc *yielded_proc = c->proc;
         // Process is done running for now.

@@ -38,14 +38,14 @@ main(void)
     }
   } else {
     // Parent
-    for (int i = 0; i < 5; i++) {  
+    for (int i = 0; i < 100; i++) {  
       int value = co_yield(pid2, 2);
       printf("Parent received: %d\n", value);  
     }
+   
+    //try to co_yield to killed process
     kill(pid2);
     wait(0);
-
-    
     ret = co_yield(pid2, 1);
     if (ret == -1)
       printf("OK: killed process returned -1\n");

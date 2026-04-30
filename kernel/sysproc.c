@@ -161,6 +161,7 @@ co_sleep(struct proc *p)
 uint64
 sys_co_yield(void)
 {
+
   int value, pid;
   struct proc *curr, *target;
   int target_from_sched;
@@ -169,21 +170,22 @@ sys_co_yield(void)
   argint(1, &value);
 
   curr = myproc();
-
+  //Edge Case 1: pid <= 0 or pid == curr->pid
   if (pid <= 0 || pid == curr->pid)
     return -1;
 
   target = find_proc_by_pid(pid);   // returns with target->lock held
+  //Edge Case 2: target == 0
   if (target == 0)
     return -1;
-
- if (!is_co_waiting(target)) {
+  //Edge Case 3: target is not waiting
+  if (!is_co_waiting(target))
+  {
   release(&target->lock);
   co_sleep(curr);
-
+  //Edge Case 4: curr is killed
   if (killed(curr))
     return -1;
-
   return curr->trapframe->a0;
 }
 
@@ -201,19 +203,21 @@ sys_co_yield(void)
 
   release(&curr->lock);
 
-  // If target is resuming from co_sleep()->sched(), keep target->lock held.
-  // If target is resuming from a previous direct swtch, release it now.
+  //Edge Case 5: target is resuming from co_sleep()->sched() keep the lock held. else release it
   if (!target_from_sched && holding(&target->lock))
   release(&target->lock);
 
+// if went to sleep from sched keep the lock else release it
 swtch(&curr->context, &target->context);
 
 mycpu()->proc = curr;
 curr->chan = 0;
 
+
 if (holding(&curr->lock))
   release(&curr->lock);
 
+//Edge Case 6: curr is killed after swtch
 if (killed(curr))
   return -1;
 
