@@ -23,6 +23,8 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int memsize(void);
+uint __lcg_rand(void);
+void __lcg_srand(uint);
 //added by me rand.c
 void lcg_srand(uint);
 uint lcg_rand(void);

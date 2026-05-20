@@ -37,6 +37,15 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 entry("memsize");
-# Added by me
-entry("lcg_srand");
-entry("lcg_rand");
+sub entry_alias {
+    my $name = shift;
+    my $sysname = shift;
+    print ".global $name\n";
+    print "${name}:\n";
+    print " li a7, SYS_${sysname}\n";
+    print " ecall\n";
+    print " ret\n";
+}
+
+entry_alias("__lcg_srand", "lcg_srand");
+entry_alias("__lcg_rand", "lcg_rand");

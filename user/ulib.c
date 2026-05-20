@@ -145,3 +145,13 @@ memcpy(void *dst, const void *src, uint n)
 {
   return memmove(dst, src, n);
 }
+
+uint
+lcg_rand(void) {
+  return __lcg_rand();
+}
+
+void
+lcg_srand(uint seed) {
+  __lcg_srand(seed);
+}
