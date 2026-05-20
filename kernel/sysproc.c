@@ -94,3 +94,13 @@ sys_memsize(void)
 {
   return myproc()->sz;
 }
+void sys_lcg_srand(void)
+{
+  uint seed;
+  argint(0, (int*)&seed);
+  lcg_srand(seed);
+}
+uint sys_lcg_rand(void)
+{
+  return lcg_rand();
+}
