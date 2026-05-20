@@ -102,6 +102,9 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_memsize(void);
+//Added by me
+extern uint64 sys_lcg_srand(void);
+extern uint64 sys_lcg_rand(void);
 
 
 // An array mapping syscall numbers from syscall.h

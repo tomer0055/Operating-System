@@ -2,7 +2,7 @@
 #include "spinlock.h"
 #include "defs.h"
 
-static uint rand_state;
+static uint rand_state = 0;
 static struct spinlock rand_lock;
 
 void randinit(void) {
