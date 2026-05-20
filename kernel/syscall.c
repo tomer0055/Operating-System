@@ -128,6 +128,10 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_memsize] sys_memsize,
+//Added by me
+[SYS_lcg_srand] lcg_srand,
+[SYS_lcg_rand] lcg_rand,
+//
 };
 
 void

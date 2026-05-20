@@ -21,3 +21,6 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_memsize 22
+// ADDED BY ME
+#define SYS_lcg_srand 23
+#define SYS_lcg_rand 24

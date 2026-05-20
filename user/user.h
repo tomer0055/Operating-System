@@ -23,7 +23,10 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int memsize(void);
-
+//added by me rand.c
+void lcg_srand(uint);
+uint lcg_rand(void);
+///
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

@@ -54,6 +54,13 @@ void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, int, uint64, uint, uint);
 void            itrunc(struct inode*);
 
+/// ADDED BY ME
+// rand.c
+void            randinit(void);
+void            lcg_srand(uint);
+uint            lcg_rand(void);
+/// ADDED BY ME
+
 // ramdisk.c
 void            ramdiskinit(void);
 void            ramdiskintr(void);
