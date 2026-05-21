@@ -200,3 +200,11 @@ int             israeli_create(int);
 int             israeli_acquire(int);
 int             israeli_release(int);
 int             israeli_destroy(int);
+
+
+// race.c
+void            race_init_kernel(void);
+int             race_init(int, int);
+int             race_inc_score(int);
+int             race_get_score(int);
+int             race_get_winner(void);

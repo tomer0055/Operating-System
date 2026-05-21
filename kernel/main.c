@@ -33,6 +33,7 @@ main()
     // Added by me:
     randinit();      // Part0: initialize random number generator
     israeli_lock_init(); // Part1: initialize Israeli locks
+    race_init_kernel(); // Part2: initialize race conditions
 
     __sync_synchronize();
     started = 1;

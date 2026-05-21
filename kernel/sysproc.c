@@ -154,3 +154,35 @@ sys_israeli_destroy(void)
   argint(0, &lock_id);
   return israeli_destroy(lock_id);
 }
+
+uint64
+sys_race_init(void)
+{
+  int num_teams;
+  int team_size;
+  argint(0, &num_teams);
+  argint(1, &team_size);
+  return race_init(num_teams, team_size);
+}
+
+uint64
+sys_race_inc_score(void)
+{
+  int team_id;
+  argint(0, &team_id);
+  return race_inc_score(team_id);
+}
+
+uint64
+sys_race_get_score(void)
+{
+  int team_id;
+  argint(0, &team_id);
+  return race_get_score(team_id);
+}
+
+uint64
+sys_race_get_winner(void)
+{
+  return race_get_winner();
+}
