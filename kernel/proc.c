@@ -123,7 +123,11 @@ allocproc(void)
 
 found:
   p->pid = allocpid();
+  
   p->state = USED;
+  
+  // Added by me
+  p->gid = 0; // default group ID is 0
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -311,6 +315,9 @@ fork(void)
   safestrcpy(np->name, p->name, sizeof(p->name));
 
   pid = np->pid;
+
+  // Added by me:
+  np->gid = p->gid; // child inherits group ID from parent
 
   release(&np->lock);
 

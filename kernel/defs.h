@@ -187,3 +187,16 @@ void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+
+// random.c
+void            randinit(void);
+void            lcg_srand(uint);
+uint            lcg_rand(void);
+
+// israeli_lock.c
+void            israeli_lock_init(void);
+int             israeli_create(int);
+int             israeli_acquire(int);
+int             israeli_release(int);
+int             israeli_destroy(int);

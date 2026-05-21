@@ -29,6 +29,11 @@ main()
     fileinit();      // file table
     virtio_disk_init(); // emulated hard disk
     userinit();      // first user process
+    
+    // Added by me:
+    randinit();      // Part0: initialize random number generator
+    israeli_lock_init(); // Part1: initialize Israeli locks
+
     __sync_synchronize();
     started = 1;
   } else {
