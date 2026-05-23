@@ -55,7 +55,6 @@ run_race(int fav){
                 }
 
                 israeli_release(lock_id);
-                // sleep(1); // Simulate time taken to run
             }
             exit(0);
         }
@@ -71,8 +70,11 @@ run_race(int fav){
     for (int i = 0; i < TEAMS; i++) {
         printf("Team %d: %d\n", i, race_get_score(i));
     }
-    printf("Winning team: Team %d\n", winning_team);
 
+    printf("--------------------------\n");
+    printf("Winning team: Team %d\n", winning_team);
+    printf("---------------------------\n\n");
+    
     if (israeli_destroy(lock_id) < 0) {
         printf("Failed to destroy Israeli lock\n");
         exit(1);
